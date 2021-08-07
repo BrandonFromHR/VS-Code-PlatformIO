@@ -1,0 +1,496 @@
+Telemetry Viewer File Format v0.6
+
+GUI Settings:
+
+	tile column count = 6
+	tile row count = 5
+	show plot tooltips = true
+	smooth scrolling = true
+	opengl antialiasing = true
+	show fps and period = false
+	chart index for benchmarks = -1
+
+Communication Settings:
+
+	port = UART: COM11
+	uart baud rate = 1000000
+	tcp/udp port number = 8080
+	packet type = CSV
+	sample rate = 50
+
+16 Data Structure Locations:
+
+	location = 0
+	processor index = -1
+	name = Altitude (SIM)
+	color = 0x0000FF
+	unit = meters
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 1
+	processor index = -1
+	name = Velocity (SIM)
+	color = 0x00FF00
+	unit = meters/s
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 2
+	processor index = -1
+	name = Acceleration (SIM)
+	color = 0xFF0000
+	unit = meters/s^2
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 3
+	processor index = -1
+	name = Altitude (BMP180)
+	color = 0x202020
+	unit = m/s^2
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 4
+	processor index = -1
+	name = X-Axis Accel
+	color = 0xFF0808
+	unit = m/s^2
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 5
+	processor index = -1
+	name = Y-Axis Accel
+	color = 0x08FF08
+	unit = m/s^2
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 6
+	processor index = -1
+	name = Z-Axis Accel
+	color = 0x0808FF
+	unit = m/s^2
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 7
+	processor index = -1
+	name = X-Axis Gyro
+	color = 0xFF00FF
+	unit = rad/s
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 8
+	processor index = -1
+	name = Y-Axis Gyro
+	color = 0x00FFFF
+	unit = rad/s
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 9
+	processor index = -1
+	name = Z-Axis Gyro
+	color = 0xAFAF00
+	unit = rad/s
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 10
+	processor index = -1
+	name = DP1 Deployed
+	color = 0x00009F
+	unit = True/False
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 11
+	processor index = -1
+	name = DP2 Deployed
+	color = 0x009F00
+	unit = True/False
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 12
+	processor index = -1
+	name = MP Deployed
+	color = 0x9F0000
+	unit = True/False
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 13
+	processor index = -1
+	name = Recovery Stage
+	color = 0x000000
+	unit = stage
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 14
+	processor index = -1
+	name = Latitude
+	color = 0x000000
+	unit = 
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+	location = 15
+	processor index = -1
+	name = Longitude
+	color = 0x800000
+	unit = 
+	conversion factor a = 1.0
+	conversion factor b = 1.0
+
+Checksum:
+
+	location = -1
+	checksum processor index = -1
+
+20 Charts:
+
+	chart type = Time Domain Chart
+	top left x = 0
+	top left y = 0
+	bottom right x = 1
+	bottom right y = 0
+	datasets = 0,3
+	duration type = Minutes
+	duration = 10.0
+	autoscale y-axis minimum = true
+	manual y-axis minimum = -1.0
+	autoscale y-axis maximum = true
+	manual y-axis maximum = 1.0
+	show x-axis title = true
+	show x-axis scale = true
+	show y-axis title = true
+	show y-axis scale = true
+	show legend = true
+
+	chart type = Time Domain Chart
+	top left x = 2
+	top left y = 0
+	bottom right x = 2
+	bottom right y = 0
+	datasets = 0,3
+	duration type = Minutes
+	duration = 0.5
+	autoscale y-axis minimum = true
+	manual y-axis minimum = -1.0
+	autoscale y-axis maximum = true
+	manual y-axis maximum = 1.0
+	show x-axis title = true
+	show x-axis scale = true
+	show y-axis title = true
+	show y-axis scale = true
+	show legend = true
+
+	chart type = Time Domain Chart
+	top left x = 0
+	top left y = 1
+	bottom right x = 1
+	bottom right y = 1
+	datasets = 1,2
+	duration type = Minutes
+	duration = 10.0
+	autoscale y-axis minimum = true
+	manual y-axis minimum = -1.0
+	autoscale y-axis maximum = true
+	manual y-axis maximum = 1.0
+	show x-axis title = true
+	show x-axis scale = true
+	show y-axis title = true
+	show y-axis scale = true
+	show legend = true
+
+	chart type = Time Domain Chart
+	top left x = 2
+	top left y = 1
+	bottom right x = 2
+	bottom right y = 1
+	datasets = 1,2
+	duration type = Minutes
+	duration = 0.5
+	autoscale y-axis minimum = true
+	manual y-axis minimum = -1.0
+	autoscale y-axis maximum = true
+	manual y-axis maximum = 1.0
+	show x-axis title = true
+	show x-axis scale = true
+	show y-axis title = true
+	show y-axis scale = true
+	show legend = true
+
+	chart type = Time Domain Chart
+	top left x = 0
+	top left y = 2
+	bottom right x = 1
+	bottom right y = 2
+	datasets = 4,5,6
+	duration type = Minutes
+	duration = 10.0
+	autoscale y-axis minimum = true
+	manual y-axis minimum = -1.0
+	autoscale y-axis maximum = true
+	manual y-axis maximum = 1.0
+	show x-axis title = true
+	show x-axis scale = true
+	show y-axis title = true
+	show y-axis scale = true
+	show legend = true
+
+	chart type = Time Domain Chart
+	top left x = 2
+	top left y = 2
+	bottom right x = 2
+	bottom right y = 2
+	datasets = 4,5,6
+	duration type = Minutes
+	duration = 0.5
+	autoscale y-axis minimum = true
+	manual y-axis minimum = -1.0
+	autoscale y-axis maximum = true
+	manual y-axis maximum = 1.0
+	show x-axis title = true
+	show x-axis scale = true
+	show y-axis title = true
+	show y-axis scale = true
+	show legend = true
+
+	chart type = Time Domain Chart
+	top left x = 0
+	top left y = 3
+	bottom right x = 1
+	bottom right y = 3
+	datasets = 7,8,9
+	duration type = Minutes
+	duration = 10.0
+	autoscale y-axis minimum = true
+	manual y-axis minimum = -1.0
+	autoscale y-axis maximum = true
+	manual y-axis maximum = 1.0
+	show x-axis title = true
+	show x-axis scale = true
+	show y-axis title = true
+	show y-axis scale = true
+	show legend = true
+
+	chart type = Time Domain Chart
+	top left x = 2
+	top left y = 3
+	bottom right x = 2
+	bottom right y = 3
+	datasets = 7,8,9
+	duration type = Minutes
+	duration = 0.5
+	autoscale y-axis minimum = true
+	manual y-axis minimum = -1.0
+	autoscale y-axis maximum = true
+	manual y-axis maximum = 1.0
+	show x-axis title = true
+	show x-axis scale = true
+	show y-axis title = true
+	show y-axis scale = true
+	show legend = true
+
+	chart type = Time Domain Chart
+	top left x = 0
+	top left y = 4
+	bottom right x = 1
+	bottom right y = 4
+	datasets = 10,11,12
+	duration type = Minutes
+	duration = 10.0
+	autoscale y-axis minimum = true
+	manual y-axis minimum = -1.0
+	autoscale y-axis maximum = true
+	manual y-axis maximum = 1.0
+	show x-axis title = true
+	show x-axis scale = true
+	show y-axis title = true
+	show y-axis scale = true
+	show legend = true
+
+	chart type = Time Domain Chart
+	top left x = 2
+	top left y = 4
+	bottom right x = 2
+	bottom right y = 4
+	datasets = 10,11,12
+	duration type = Minutes
+	duration = 0.5
+	autoscale y-axis minimum = true
+	manual y-axis minimum = -1.0
+	autoscale y-axis maximum = true
+	manual y-axis maximum = 1.0
+	show x-axis title = true
+	show x-axis scale = true
+	show y-axis title = true
+	show y-axis scale = true
+	show legend = true
+
+	chart type = Dial Chart
+	top left x = 3
+	top left y = 0
+	bottom right x = 3
+	bottom right y = 0
+	datasets = 0
+	autoscale dial minimum = false
+	manual dial minimum = -100.0
+	autoscale dial maximum = false
+	manual dial maximum = 2000.0
+	sample count = 10000
+	show dataset label = true
+	show reading label = true
+	show min/max labels = true
+	show statistics = false
+
+	chart type = Dial Chart
+	top left x = 4
+	top left y = 0
+	bottom right x = 4
+	bottom right y = 0
+	datasets = 3
+	autoscale dial minimum = false
+	manual dial minimum = -100.0
+	autoscale dial maximum = false
+	manual dial maximum = 2000.0
+	sample count = 10000
+	show dataset label = true
+	show reading label = true
+	show min/max labels = true
+	show statistics = false
+
+	chart type = Dial Chart
+	top left x = 3
+	top left y = 1
+	bottom right x = 3
+	bottom right y = 1
+	datasets = 1
+	autoscale dial minimum = false
+	manual dial minimum = -50.0
+	autoscale dial maximum = false
+	manual dial maximum = 225.0
+	sample count = 10000
+	show dataset label = true
+	show reading label = true
+	show min/max labels = true
+	show statistics = false
+
+	chart type = Dial Chart
+	top left x = 4
+	top left y = 1
+	bottom right x = 4
+	bottom right y = 1
+	datasets = 2
+	autoscale dial minimum = false
+	manual dial minimum = -50.0
+	autoscale dial maximum = false
+	manual dial maximum = 200.0
+	sample count = 10000
+	show dataset label = true
+	show reading label = true
+	show min/max labels = true
+	show statistics = false
+
+	chart type = Dial Chart
+	top left x = 3
+	top left y = 4
+	bottom right x = 3
+	bottom right y = 4
+	datasets = 10
+	autoscale dial minimum = false
+	manual dial minimum = 0.0
+	autoscale dial maximum = false
+	manual dial maximum = 1.0
+	sample count = 10000
+	show dataset label = true
+	show reading label = true
+	show min/max labels = true
+	show statistics = false
+
+	chart type = Dial Chart
+	top left x = 4
+	top left y = 4
+	bottom right x = 4
+	bottom right y = 4
+	datasets = 11
+	autoscale dial minimum = false
+	manual dial minimum = 0.0
+	autoscale dial maximum = false
+	manual dial maximum = 1.0
+	sample count = 10000
+	show dataset label = true
+	show reading label = true
+	show min/max labels = true
+	show statistics = false
+
+	chart type = Dial Chart
+	top left x = 5
+	top left y = 4
+	bottom right x = 5
+	bottom right y = 4
+	datasets = 12
+	autoscale dial minimum = false
+	manual dial minimum = 0.0
+	autoscale dial maximum = false
+	manual dial maximum = 1.0
+	sample count = 10000
+	show dataset label = true
+	show reading label = true
+	show min/max labels = true
+	show statistics = false
+
+	chart type = Dial Chart
+	top left x = 5
+	top left y = 3
+	bottom right x = 5
+	bottom right y = 3
+	datasets = 13
+	autoscale dial minimum = false
+	manual dial minimum = 0.0
+	autoscale dial maximum = false
+	manual dial maximum = 3.0
+	sample count = 10000
+	show dataset label = true
+	show reading label = true
+	show min/max labels = true
+	show statistics = false
+
+	chart type = Dial Chart
+	top left x = 4
+	top left y = 2
+	bottom right x = 4
+	bottom right y = 2
+	datasets = 14
+	autoscale dial minimum = true
+	manual dial minimum = 0.0
+	autoscale dial maximum = true
+	manual dial maximum = 3.0
+	sample count = 10000
+	show dataset label = true
+	show reading label = true
+	show min/max labels = true
+	show statistics = false
+
+	chart type = Dial Chart
+	top left x = 4
+	top left y = 3
+	bottom right x = 4
+	bottom right y = 3
+	datasets = 15
+	autoscale dial minimum = true
+	manual dial minimum = 0.0
+	autoscale dial maximum = true
+	manual dial maximum = 3.0
+	sample count = 10000
+	show dataset label = true
+	show reading label = true
+	show min/max labels = true
+	show statistics = false
