@@ -33,10 +33,11 @@ void BMP180_altimeter::init(SD_Storage* sd_card)
 void BMP180_altimeter::init_datalog()
 {
   // figure out which file name to use based on sd card contents
-  for(int i = 0; i < 100; i++)
+  for(int i = 0; i < 1000; i++)
   {
-    datalog_filename[4] = i/10 + '0';
-    datalog_filename[5] = i%10 + '0';
+    datalog_filename[4] = i/100 + '0';
+    datalog_filename[5] = i/10 + '0';
+    datalog_filename[6] = i%10 + '0';
     if(!sd_card->exists(datalog_filename)) // found new file name
     {
       String data_titles;

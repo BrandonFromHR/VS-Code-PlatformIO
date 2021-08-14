@@ -3,7 +3,7 @@
 #include <SFE_BMP180.h> // for bmp180 pressure and temp sensor
 #include "SD_Storage.h"
 
-#define BMP180_FREQUENCY 32
+#define BMP180_FREQUENCY 40
 #define ALT_SAMPLES (BMP180_FREQUENCY * 5)
 #define RECENT_SAMPLES (BMP180_FREQUENCY * 2)
 
@@ -14,7 +14,7 @@ private:
   double altitude_data[ALT_SAMPLES] = {0.0};
 
   SD_Storage* sd_card;
-  char datalog_filename[13] = "ALT_00.csv";
+  char datalog_filename[13] = "ALT_000.csv";
 public:
   void init(SD_Storage* sd_card);
   void init_datalog();

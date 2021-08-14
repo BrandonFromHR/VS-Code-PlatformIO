@@ -33,7 +33,7 @@ private:
   uint32_t lastPhysCalc = LAUNCH_TIME*1000;
 
   SD_Storage* sd_card;
-  char datalog_filename[13] = "SIM_00.csv";
+  char datalog_filename[13] = "SIM_000.csv";
 public:
   void init(SD_Storage* sd_card);
   void init_datalog();

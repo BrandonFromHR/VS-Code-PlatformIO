@@ -19,8 +19,9 @@ void PhysicsSim::init_datalog()
   // figure out which file name to use based on sd card contents
   for(int i = 0; i < 100; i++)
   {
-    datalog_filename[4] = i/10 + '0';
-    datalog_filename[5] = i%10 + '0';
+    datalog_filename[4] = i/100 + '0';
+    datalog_filename[5] = i/10 + '0';
+    datalog_filename[6] = i%10 + '0';
     if(!sd_card->exists(datalog_filename)) // found new file name
     {
       String data_titles;
@@ -48,10 +49,10 @@ void PhysicsSim::sim_physics(bool parachute_deployed[3])
 {
   double vel2 = velocity*velocity;
   double wind_resistance_coefficient = 0.0012;
-  if(millis() < 10000) // rocket on pad
+  if(millis() < LAUNCH_TIME) // rocket on pad
   { // do nothing
   }
-  else if(millis() < 10000 + I500_BURNTIME*1000)
+  else if(millis() < LAUNCH_TIME + I500_BURNTIME*1000)
   { acceleration = (I500_THRUST - wind_resistance_coefficient*vel2) / mass - GRAVITY; }
   else if(real_altitude > 0)
   {

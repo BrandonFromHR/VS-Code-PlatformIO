@@ -24,7 +24,7 @@ private:
   double distance_data = 0.0;
 
   SD_Storage* sd_card;
-  char datalog_filename[13] = "GPS_00.csv";
+  char datalog_filename[13] = "GPS_000.csv";
 public:
   void init(SD_Storage* sd_card);
   void init_datalog();

@@ -1,5 +1,6 @@
 #pragma once
 #include <SD.h>
+#include "SdFat.h"
 #include <SPI.h>
 #include "GT_U7_GPS.h"
 
@@ -23,6 +24,10 @@
 #define XTSD_CS 36
 #define BISD_CS BUILTIN_SDCARD
 
+// used for data dump
+#define NUM_DATAFILES 4
+#define SUBNAME_SIZE 4 // 3 plus NULL char \0
+
 class GT_U7_GPS; // declaration for circular dependencies
 
 class SD_Storage : public SDClass
@@ -31,7 +36,7 @@ private:
   String name;
   uint8_t csPin;
 
-  char evr_filename[13] = "EVR_00.csv";
+  char evr_filename[13] = "EVR_000.csv";
 
   GT_U7_GPS* gps;
 public:
@@ -40,4 +45,9 @@ public:
   void write_line(char filename[13], String dataString);
   void write_evr(String type, String subsystem, String note);
   void read(char filename[13]);
+
+
+  // USE THIS FUNCTION WISELY!
+  // REMOVES ALL FILES FROM CARD!!!
+  void remove_all_files(); 
 };

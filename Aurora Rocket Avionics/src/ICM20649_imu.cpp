@@ -92,8 +92,9 @@ void ICM20649_imu::init_datalog()
   // figure out which file name to use based on sd card contents
   for(int i = 0; i < 100; i++)
   {
-    datalog_filename[4] = i/10 + '0';
-    datalog_filename[5] = i%10 + '0';
+    datalog_filename[4] = i/100 + '0';
+    datalog_filename[5] = i/10 + '0';
+    datalog_filename[6] = i%10 + '0';
     if(!sd_card->exists(datalog_filename)) // found new file name
     {
       String data_titles;
@@ -139,7 +140,6 @@ void ICM20649_imu::update_data()
   temp_data[index] = temp.temperature;
   double data[8] =
   {
-    micros(),
     accel.acceleration.x,
     accel.acceleration.y,
     accel.acceleration.z,
@@ -149,17 +149,15 @@ void ICM20649_imu::update_data()
     temp.temperature
   };
   String csv_data;
-  for(int i = 0; i < 8; i++)
+  csv_data += String(micros());
+  csv_data += ",";
+  for(int i = 0; i < 7; i++)
   {
     csv_data += String(data[i],4);
-    if(i < 7)
+    if(i < 6)
     { csv_data += ","; }
   }
   sd_card->write_line(datalog_filename,csv_data);
-  if(get_accel_magnitude() > 196)
-  {
-    sd_card->write_evr(WARNING,IMU,"ACCELERATION > 20g DETECTED!");
-  }
 }
 
 

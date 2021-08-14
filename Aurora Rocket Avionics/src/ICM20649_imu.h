@@ -26,7 +26,7 @@ private:
   uint8_t index = 0; // keeps track of current data point in arrays
 
   SD_Storage* sd_card;
-  char datalog_filename[13] = "IMU_00.csv";
+  char datalog_filename[13] = "IMU_000.csv";
 public:
   void init(SD_Storage* sd_card);
   void init_datalog();
