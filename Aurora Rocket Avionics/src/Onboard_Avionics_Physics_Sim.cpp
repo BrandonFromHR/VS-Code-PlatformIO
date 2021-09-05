@@ -7,8 +7,8 @@
 #include "SD_Storage.h"
 
 
-void timer_2Hz_func();
-void timer_40Hz_func();
+void timer_8Hz_func();
+void timer_32Hz_func();
 void timer_100Hz_func();
 void sim_physics();
 void buzzer_cry();
@@ -42,12 +42,12 @@ SD_Storage BISD;
 // should be BISD for flight
 #define SECONDARY_STORAGE XTSD
 
-IntervalTimer timer_2Hz; // Serial print
-IntervalTimer timer_40Hz; // Altimeter & GPS
+IntervalTimer timer_8Hz; // Serial print
+IntervalTimer timer_32Hz; // Altimeter & GPS
 IntervalTimer timer_100Hz; // IMU, RECOVERY
 
-uint32_t timer_2Hz_period = 0;
-uint32_t timer_40Hz_period = 0;
+uint32_t timer_8Hz_period = 0;
+uint32_t timer_32Hz_period = 0;
 uint32_t timer_100Hz_period = 0;
 
 bool data_dumped = false;
@@ -59,19 +59,19 @@ void setup()
   PRIMARY_STORAGE.init("BISD",BISD_CS,&gps); // primary storage should be XTSD in flight
   PRIMARY_STORAGE.remove_all_files(); // only use right before flight, not during flight
 
-  //physicsSim.init(&PRIMARY_STORAGE);
+  physicsSim.init(&PRIMARY_STORAGE);
   altimeter.init(&PRIMARY_STORAGE);
   imu.init(&PRIMARY_STORAGE);
   recovery.init(&PRIMARY_STORAGE);
   gps.init(&PRIMARY_STORAGE);
 
-  SPI.usingInterrupt(timer_2Hz);
-  SPI.usingInterrupt(timer_40Hz);
+  SPI.usingInterrupt(timer_8Hz);
+  SPI.usingInterrupt(timer_32Hz);
   SPI.usingInterrupt(timer_100Hz);
-  timer_2Hz.begin(timer_2Hz_func,500000); // 2 Hz interrupt
-  timer_2Hz.priority(130);
-  timer_40Hz.begin(timer_40Hz_func,50000); // 40 Hz interrupt
-  timer_40Hz.priority(129);
+  timer_8Hz.begin(timer_8Hz_func,125000); // 8 Hz interrupt
+  timer_8Hz.priority(130);
+  timer_32Hz.begin(timer_32Hz_func,31250); // 32 Hz interrupt
+  timer_32Hz.priority(129);
   timer_100Hz.begin(timer_100Hz_func,10000); // 100 Hz interrupt
   timer_100Hz.priority(128);
 
@@ -90,17 +90,17 @@ void loop()
   */
 }
 
-void timer_2Hz_func()
+void timer_8Hz_func()
 {
   uint32_t start_time = micros();
 
-  //print_csv_data_sim();
-  print_csv_data_flight();
+  print_csv_data_sim();
+  //print_csv_data_flight();
 
-  timer_2Hz_period = micros() - start_time;
+  timer_8Hz_period = micros() - start_time;
 }
 
-void timer_40Hz_func()
+void timer_32Hz_func()
 {
   uint32_t start_time = micros();
 
@@ -108,10 +108,10 @@ void timer_40Hz_func()
   {
     altimeter.update_data();
     gps.update_data(); // wasn't working well in 2Hz timer
-    //sim_physics();
+    sim_physics();
   }
 
-  timer_40Hz_period = micros() - start_time;
+  timer_32Hz_period = micros() - start_time;
 }
 
 void timer_100Hz_func()
@@ -123,9 +123,9 @@ void timer_100Hz_func()
     imu.update_data();
   }  
 
-  recovery.run(&altimeter); // MUST USE THIS IN FLIGHT
+  //recovery.run(&altimeter); // MUST USE THIS IN FLIGHT
 
-  //recovery.run(&physicsSim); // ABSOLUTELY DO NOT USE THIS IN FLIGHT, SIM ONLY!!!
+  recovery.run(&physicsSim); // ABSOLUTELY DO NOT USE THIS IN FLIGHT, SIM ONLY!!!
 
   timer_100Hz_period = micros() - start_time;
 }
@@ -157,8 +157,8 @@ void print_csv_data_sim()
   print_csv_element(recovery.get_recovery_stage());
   print_csv_element(gps.get_latitude());
   print_csv_element(gps.get_longitude());  
-  print_csv_element(timer_2Hz_period);
-  print_csv_element(timer_40Hz_period);
+  print_csv_element(timer_8Hz_period);
+  print_csv_element(timer_32Hz_period);
   print_csv_end(timer_100Hz_period);
   Serial.println();
 }
@@ -178,8 +178,8 @@ void print_csv_data_flight()
   print_csv_element(recovery.get_recovery_stage());
   print_csv_element(gps.get_latitude());
   print_csv_element(gps.get_longitude());  
-  print_csv_element(timer_2Hz_period);
-  print_csv_element(timer_40Hz_period);
+  print_csv_element(timer_8Hz_period);
+  print_csv_element(timer_32Hz_period);
   print_csv_end(timer_100Hz_period);
   Serial.println();
 }

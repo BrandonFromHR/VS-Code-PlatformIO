@@ -3,9 +3,9 @@
 #include <SFE_BMP180.h> // for bmp180 pressure and temp sensor
 #include "SD_Storage.h"
 
-#define BMP180_FREQUENCY 40
+#define BMP180_FREQUENCY 32
 #define ALT_SAMPLES (BMP180_FREQUENCY * 5)
-#define RECENT_SAMPLES (BMP180_FREQUENCY * 2)
+#define RECENT_SAMPLES (BMP180_FREQUENCY * 1)
 
 class BMP180_altimeter : public SFE_BMP180
 {

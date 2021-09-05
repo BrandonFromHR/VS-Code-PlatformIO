@@ -48,20 +48,19 @@ void PhysicsSim::init_datalog()
 void PhysicsSim::sim_physics(bool parachute_deployed[3])
 {
   double vel2 = velocity*velocity;
-  double wind_resistance_coefficient = 0.0012;
   if(millis() < LAUNCH_TIME) // rocket on pad
   { // do nothing
   }
-  else if(millis() < LAUNCH_TIME + I500_BURNTIME*1000)
-  { acceleration = (I500_THRUST - wind_resistance_coefficient*vel2) / mass - GRAVITY; }
+  else if(millis() < LAUNCH_TIME + SIM_BURNTIME*1000)
+  { acceleration = (SIM_THRUST - AURORA_DRAG_COEFF*vel2) / mass - GRAVITY; }
   else if(real_altitude > 0)
   {
-    mass = DRY_MASS;
+    mass = SIM_DRY_MASS;
     double wind_resistance;
     if(velocity > 0)
-    { wind_resistance = -wind_resistance_coefficient*vel2; }
+    { wind_resistance = -AURORA_DRAG_COEFF*vel2; }
     else
-    { wind_resistance = wind_resistance_coefficient*vel2; }
+    { wind_resistance = AURORA_DRAG_COEFF*vel2; }
     if(parachute_deployed[0])
     {
       float chute_diameter_inches = 12;
@@ -106,7 +105,7 @@ void PhysicsSim::sim_physics(bool parachute_deployed[3])
     float randomNum = float(random(-100,50));
     noise *= randomNum;
   }
-  noise /= 10000000.0;
+  noise /= 100000000.0;
   altitude_data[0] = real_altitude + noise;
   lastPhysCalc = micros();
 
