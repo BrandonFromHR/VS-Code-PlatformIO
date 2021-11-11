@@ -13,7 +13,7 @@
 #define BUZZER_MAX 5000
 #define BUZZER_MIN 250
 #define BUZZER_PIN 5
-#define BUZZER_PWM 1
+#define BUZZER_PWM 10
 
 #define CHIRP_FREQ 1500
 #define CHIRP_PERIOD 1000 // in ms

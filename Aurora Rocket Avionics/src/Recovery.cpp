@@ -39,11 +39,11 @@ uint32_t Recovery::get_parachute_deploy_time(uint8_t index)
 
 void Recovery::run(PhysicsSim* pSim)
 {
-  if(recovery_stage == 0 && analogRead(PYRO_JUMPER_PIN) > 50)
+  if(recovery_stage == 0)
   {
     buzzer_chirp(8); // brief chirps
   }
-  else if(recovery_stage > 0 && recovery_stage < 4 && analogRead(PYRO_JUMPER_PIN) > 50)
+  else if(recovery_stage > 0 && recovery_stage < 4)
   {
     buzzer_chirp(2); // long chirps, system is "in flight"
   }

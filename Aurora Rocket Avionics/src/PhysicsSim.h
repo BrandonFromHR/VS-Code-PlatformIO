@@ -2,9 +2,9 @@
 #include "BMP180_altimeter.h"
 #include "SD_Storage.h"
 
-#define GRAVITY 9.81 // m/s^2
+#define GRAVITY 9.807 // m/s^2
 
-#define AURORA_MASS 2.066 // Kg
+#define AURORA_MASS 2.747 // Kg
 
 #define I500_THRUST 500.0 // Newtons
 #define I500_BURNTIME 1.24 // seconds
@@ -26,10 +26,10 @@
 #define K455_WET_MASS 2.286 // Kg
 #define K455_PROP_MASS 1.361 // Kg
 
-#define SIM_THRUST K455_THRUST // Newtons
-#define SIM_BURNTIME K455_BURNTIME // seconds
-#define SIM_WET_MASS AURORA_MASS + K455_WET_MASS // Kg
-#define SIM_PROP_MASS K455_PROP_MASS // Kg
+#define SIM_THRUST J435_THRUST // Newtons
+#define SIM_BURNTIME J435_BURNTIME // seconds
+#define SIM_WET_MASS AURORA_MASS + J435_WET_MASS // Kg
+#define SIM_PROP_MASS J435_PROP_MASS // Kg
 #define SIM_DRY_MASS SIM_WET_MASS - SIM_PROP_MASS // Kg
 
 #define AIR_DENSITY 1.1 // Kg/m^3

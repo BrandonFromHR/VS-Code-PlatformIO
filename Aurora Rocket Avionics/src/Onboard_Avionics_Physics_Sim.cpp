@@ -6,7 +6,6 @@
 #include "GT_U7_GPS.h"
 #include "SD_Storage.h"
 
-
 void timer_8Hz_func();
 void timer_32Hz_func();
 void timer_100Hz_func();
@@ -94,8 +93,8 @@ void timer_8Hz_func()
 {
   uint32_t start_time = micros();
 
-  print_csv_data_sim();
-  //print_csv_data_flight();
+  //print_csv_data_sim();
+  print_csv_data_flight();
 
   timer_8Hz_period = micros() - start_time;
 }
@@ -123,9 +122,9 @@ void timer_100Hz_func()
     imu.update_data();
   }  
 
-  //recovery.run(&altimeter); // MUST USE THIS IN FLIGHT
+  recovery.run(&altimeter); // MUST USE THIS IN FLIGHT
 
-  recovery.run(&physicsSim); // ABSOLUTELY DO NOT USE THIS IN FLIGHT, SIM ONLY!!!
+  //recovery.run(&physicsSim); // ABSOLUTELY DO NOT USE THIS IN FLIGHT, SIM ONLY!!!
 
   timer_100Hz_period = micros() - start_time;
 }
