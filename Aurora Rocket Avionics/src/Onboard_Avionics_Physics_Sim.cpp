@@ -53,16 +53,52 @@ bool data_dumped = false;
 
 void setup()
 {
-  SPI.setClockDivider(150);
   Serial.begin(500000);
-  PRIMARY_STORAGE.init("BISD",BISD_CS,&gps); // primary storage should be XTSD in flight
-  PRIMARY_STORAGE.remove_all_files(); // only use right before flight, not during flight
+  PRIMARY_STORAGE.init("BISD",BISD_CS,&gps);
+  //PRIMARY_STORAGE.remove_all_files(); // only use right before flight, not during flight
 
   physicsSim.init(&PRIMARY_STORAGE);
   altimeter.init(&PRIMARY_STORAGE);
   imu.init(&PRIMARY_STORAGE);
   recovery.init(&PRIMARY_STORAGE);
   gps.init(&PRIMARY_STORAGE);
+
+  for(int i = 0; i < 5; i++)
+  {
+    analogWriteFrequency(BUZZER_PIN,1000);
+    analogWrite(BUZZER_PIN,100);
+    delay(40);
+    analogWrite(BUZZER_PIN,0);
+    delay(10);
+  }
+  for(int i = 0; i < 5; i++)
+  {
+    analogWriteFrequency(BUZZER_PIN,1500);
+    analogWrite(BUZZER_PIN,100);
+    delay(40);
+    analogWrite(BUZZER_PIN,0);
+    delay(10);
+  }
+  for(int i = 0; i < 5; i++)
+  {
+    analogWriteFrequency(BUZZER_PIN,2000);
+    analogWrite(BUZZER_PIN,100);
+    delay(40);
+    analogWrite(BUZZER_PIN,0);
+    delay(10);
+  }
+  for(int i = 0; i < 5; i++)
+  {
+    analogWriteFrequency(BUZZER_PIN,1000);
+    analogWrite(BUZZER_PIN,100);
+    delay(40);
+    analogWrite(BUZZER_PIN,0);
+    delay(10);
+  }
+  delay(1000);
+
+
+
 
   SPI.usingInterrupt(timer_8Hz);
   SPI.usingInterrupt(timer_32Hz);

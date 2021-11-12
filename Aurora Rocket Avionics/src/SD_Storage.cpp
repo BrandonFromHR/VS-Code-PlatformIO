@@ -9,9 +9,41 @@ void SD_Storage::init(String name, uint8_t cs_pin, GT_U7_GPS* gps)
   // see if the card is present and can be initialized:
   if (!begin(cs_pin)) {
     Serial.println(" FAILED, is card present?");
-    //while (1)
+    while (1)
     {
-      // No SD card, so don't do anything more - stay stuck here
+        for(int i = 0; i < 10; i++)
+        {
+          analogWriteFrequency(5,400);
+          analogWrite(5,100);
+          delay(40);
+          analogWrite(5,0);
+          delay(10);
+        }
+        for(int i = 0; i < 10; i++)
+        {
+          analogWriteFrequency(5,300);
+          analogWrite(5,100);
+          delay(40);
+          analogWrite(5,0);
+          delay(10);
+        }
+        for(int i = 0; i < 10; i++)
+        {
+          analogWriteFrequency(5,200);
+          analogWrite(5,100);
+          delay(40);
+          analogWrite(5,0);
+          delay(10);
+        }
+        for(int i = 0; i < 10; i++)
+        {
+          analogWriteFrequency(5,100);
+          analogWrite(5,100);
+          delay(40);
+          analogWrite(5,0);
+          delay(10);
+        }
+        delay(5000);
     }
   }
   Serial.println(" card found.");
