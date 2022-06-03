@@ -2,7 +2,7 @@
 MS5607 Barometric Pressure Sensor driver
 
 Written by Brandon Summers
-Last updated April 18, 2022
+Last updated May 31, 2022
 Based on MS5607 datasheet information
 
 Arduino platform friendly - Made specifically to be used with Teensy 3.6
@@ -12,13 +12,38 @@ Arduino platform friendly - Made specifically to be used with Teensy 3.6
 
 
 // Initializes the MS5607
-void MS5607::init()
+void MS5607::init(uint8_t new_cs_pin, CONV_OSR new_osr)
 {
-    pinMode(CS_PIN, OUTPUT);
+    set_CS_pin(new_cs_pin);
 
     // Reset MS5607 after powerup to ensure PROM load to internal register
     reset();
     get_PROM();
+    
+    // Set Oversampling rates
+    switch(new_osr)
+    {
+    case OSR_256:
+        set_D1_OSR(CONV_D1_256);
+        set_D2_OSR(CONV_D2_256);   
+        break;
+    case OSR_512:
+        set_D1_OSR(CONV_D1_512);
+        set_D2_OSR(CONV_D2_512);   
+        break;
+    case OSR_1024:
+        set_D1_OSR(CONV_D1_1024);
+        set_D2_OSR(CONV_D2_1024);   
+        break;
+    case OSR_2048:
+        set_D1_OSR(CONV_D1_2048);
+        set_D2_OSR(CONV_D2_2048);   
+        break;
+    case OSR_4096:
+        set_D1_OSR(CONV_D1_4096);
+        set_D2_OSR(CONV_D2_4096);   
+        break;
+    }
 }
 
 
@@ -31,6 +56,21 @@ void MS5607::reset()
     digitalWrite(CS_PIN,1);
     SPI.endTransaction();
     delay(10); // wait for reset to complete
+}
+
+
+// Set the SPI Chip Select pin for the MS5607
+void MS5607::set_CS_pin(uint8_t new_cs_pin)
+{
+    CS_PIN = new_cs_pin;
+    pinMode(get_CS_pin(),OUTPUT);
+}
+
+
+// Return the SPI Chip Select pin for the MS5607
+uint8_t MS5607::get_CS_pin()
+{
+    return CS_PIN;
 }
 
 
@@ -163,7 +203,7 @@ int32_t MS5607::get_temp()
     SPI.endTransaction();
 
     D2 = temp_data[0]*65536 + temp_data[1]*256 + temp_data[2]; // combine data
-    dT = (int64_t)D2 - (int64_t)C5*256*1.003;
+    dT = (int64_t)D2 - (int64_t)C5*256;
     TEMP = 2000 + (int64_t)dT*(int64_t)C6/8388608; 
     return TEMP;
 }
@@ -218,8 +258,9 @@ uint32_t MS5607::get_altitude()
     // Add Upper stratosphere math if expected altitude is above 25Km (82k feet)
     // Honestly you're really getting towards the theoretical pressure limit
     // of the sensor if you're above 25Km
-    altitude *= 10;
-    return altitude;
+
+    altitude *= 100.0; // convert meters to centimeters for integer value
+    return uint32_t(altitude);
 }
 
 
@@ -255,4 +296,16 @@ void MS5607::print_all()
     Serial.print(SENS);
     Serial.print(" PRES:");
     Serial.println(PRES);
+}
+
+
+void MS5607::print_data()
+{
+    Serial.print("Temp ");
+    Serial.print(get_temp()); 
+    Serial.print(" centicelsius - Pressure ");
+    Serial.print(get_pressure());
+    Serial.print(" Pa - Altitude ");
+    Serial.print(get_altitude());
+    Serial.println(" centimeters");  
 }

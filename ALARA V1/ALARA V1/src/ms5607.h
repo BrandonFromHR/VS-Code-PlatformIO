@@ -2,7 +2,7 @@
 MS5607 Barometric Pressure Sensor driver
 
 Written by Brandon Summers
-Last updated April 18, 2022
+Last updated May 31, 2022
 Based on MS5607 datasheet information
 
 Arduino platform friendly - Made specifically to be used with Teensy 3.6
@@ -13,6 +13,7 @@ Arduino platform friendly - Made specifically to be used with Teensy 3.6
 
 #include <Arduino.h>
 
+#define BME_CS_PIN 10
 #define BME_SPI_RATE 20000000 // Hz
 
 
@@ -42,6 +43,15 @@ enum PROM_COEF : const uint8_t
     PROM_READ_C3 = 0xA6,
     PROM_READ_C4 = 0xA8,
     PROM_READ_C5 = 0xAA
+};
+
+enum CONV_OSR : const uint16_t
+{
+    OSR_256 = 256,
+    OSR_512 = 512,
+    OSR_1024 = 1024,
+    OSR_2048 = 2048,
+    OSR_4096 = 4096
 };
 
 
@@ -77,8 +87,11 @@ private:
     int64_t PRES = 0;
 
 public:
-    void init();
+    void init(uint8_t new_cs_pin, CONV_OSR new_osr);
     void reset(); 
+
+    void set_CS_pin(uint8_t new_cs_pin);
+    uint8_t get_CS_pin();
 
     void set_D1_OSR(D1_OSR new_d1_osr);
     D1_OSR get_D1_OSR();
@@ -96,4 +109,5 @@ public:
     uint32_t get_altitude();
 
     void print_all();
+    void print_data();
 };
