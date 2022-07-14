@@ -9,16 +9,21 @@ Arduino platform friendly - Made specifically to be used with Teensy 3.6
 */
 
 #include "ms5607.h"
+#include "extendedIO/extendedIO.h"
 
 
 // Initializes the MS5607
 void MS5607::init(uint8_t new_cs_pin, CONV_OSR new_osr)
 {
+    Serial.println("BPS INIT BEGIN");
     set_CS_pin(new_cs_pin);
-
+    Serial.print("BPS CS PIN SET TO PIN ");
+    Serial.println(get_CS_pin());
     // Reset MS5607 after powerup to ensure PROM load to internal register
     reset();
+    Serial.println("BPS RESET DONE");
     get_PROM();
+    Serial.println("BPS GOT PROM");
     
     // Set Oversampling rates
     switch(new_osr)
@@ -26,35 +31,49 @@ void MS5607::init(uint8_t new_cs_pin, CONV_OSR new_osr)
     case OSR_256:
         set_D1_OSR(CONV_D1_256);
         set_D2_OSR(CONV_D2_256);   
+        Serial.println("BPS OSR AT 256");
         break;
     case OSR_512:
         set_D1_OSR(CONV_D1_512);
         set_D2_OSR(CONV_D2_512);   
+        Serial.println("BPS OSR AT 512");
         break;
     case OSR_1024:
         set_D1_OSR(CONV_D1_1024);
         set_D2_OSR(CONV_D2_1024);   
+        Serial.println("BPS OSR AT 1024");
         break;
     case OSR_2048:
         set_D1_OSR(CONV_D1_2048);
         set_D2_OSR(CONV_D2_2048);   
+        Serial.println("BPS OSR AT 2048");
         break;
     case OSR_4096:
         set_D1_OSR(CONV_D1_4096);
         set_D2_OSR(CONV_D2_4096);   
+        Serial.println("BPS OSR AT 4096");
         break;
     }
+    Serial.println("BPS INIT COMPLETE");
 }
 
 
 // Hardware resets the MS5607
 void MS5607::reset()
-{
-    SPI.beginTransaction(SPISettings(BME_SPI_RATE, MSBFIRST, SPI_MODE0));
-    digitalWrite(CS_PIN,0);
+{    
+    Serial.println("SPI BEGINNING TRANSACTION");
+    SPI.beginTransaction(SPISettings(BPS_SPI_RATE, MSBFIRST, SPI_MODE0));
+    Serial.println("SPI SETTING CS PIN LOW");
+    //digitalWrite(CS_PIN,0);
+    digitalWrite(ED19,0);
+    Serial.println("SPI SENDING RESET COMMAND");
     SPI.transfer(RESET); // send reset command
-    digitalWrite(CS_PIN,1);
+    Serial.println("SPI SETTING CS PIN HIGH");
+    //digitalWrite(CS_PIN,1);
+    digitalWrite(ED19,1);
+    Serial.println("SPI ENDING TRANSACTION");
     SPI.endTransaction();
+    Serial.println("SPI TRANSACTION ENDED");
     delay(10); // wait for reset to complete
 }
 
@@ -63,7 +82,7 @@ void MS5607::reset()
 void MS5607::set_CS_pin(uint8_t new_cs_pin)
 {
     CS_PIN = new_cs_pin;
-    pinMode(get_CS_pin(),OUTPUT);
+    pinMode(new_cs_pin,OUTPUT);
 }
 
 
@@ -167,30 +186,35 @@ void MS5607::get_PROM()
 // Gets an individual calibration coefficient value from onboard PROM
 void MS5607::get_coef(int64_t* coef, uint16_t coef_reg)
 {
-    SPI.beginTransaction(SPISettings(BME_SPI_RATE, MSBFIRST, SPI_MODE0));
-    digitalWrite(CS_PIN,0);
+    SPI.beginTransaction(SPISettings(BPS_SPI_RATE, MSBFIRST, SPI_MODE0));
+    //digitalWrite(CS_PIN,0);
+    digitalWrite(ED19,0);
     SPI.transfer(coef_reg);                 // throw away first byte read
     *coef = 0;                              // reset coefficient value 
     *coef += SPI.transfer(coef_reg)*256;    // get most significant byte
     *coef += SPI.transfer(coef_reg);        // get least significant byte
-    digitalWrite(CS_PIN,1);
+    //digitalWrite(CS_PIN,1);
+    digitalWrite(ED19,1);
     SPI.endTransaction();
 }
  
 
 // Gets the temperature in degrees centicelsius (Celsius times 100)
-int32_t MS5607::get_temp()
+void MS5607::update_temperature()
 {
-    SPI.beginTransaction(SPISettings(BME_SPI_RATE, MSBFIRST, SPI_MODE0));
-    digitalWrite(CS_PIN,0);
+    SPI.beginTransaction(SPISettings(BPS_SPI_RATE, MSBFIRST, SPI_MODE0));
+    //digitalWrite(CS_PIN,0);
+    digitalWrite(ED19,0);
     SPI.transfer(get_D2_OSR());
-    digitalWrite(CS_PIN,1);
+    //digitalWrite(CS_PIN,1);
+    digitalWrite(ED19,1);
     SPI.endTransaction();
 
     delayMicroseconds(get_D2_OSR_delay());
 
-    SPI.beginTransaction(SPISettings(BME_SPI_RATE, MSBFIRST, SPI_MODE0));
-    digitalWrite(CS_PIN,0);  
+    SPI.beginTransaction(SPISettings(BPS_SPI_RATE, MSBFIRST, SPI_MODE0));
+    //digitalWrite(CS_PIN,0);  
+    digitalWrite(ED19,0);
     SPI.transfer(ADC_READ); // throw away first byte read
     uint8_t temp_data[3] = {0};
 
@@ -199,29 +223,32 @@ int32_t MS5607::get_temp()
         temp_data[i] = SPI.transfer(ADC_READ);
     }
 
-    digitalWrite(CS_PIN,1);
+    //digitalWrite(CS_PIN,1);
+    digitalWrite(ED19,1);
     SPI.endTransaction();
 
     D2 = temp_data[0]*65536 + temp_data[1]*256 + temp_data[2]; // combine data
     dT = (int64_t)D2 - (int64_t)C5*256;
     TEMP = 2000 + (int64_t)dT*(int64_t)C6/8388608; 
-    return TEMP;
 }
 
 
 // Gets the air pressure in Pascals
-uint32_t MS5607::get_pressure()
+void MS5607::update_pressure()
 {
-    SPI.beginTransaction(SPISettings(BME_SPI_RATE, MSBFIRST, SPI_MODE0));
-    digitalWrite(CS_PIN,0);
+    SPI.beginTransaction(SPISettings(BPS_SPI_RATE, MSBFIRST, SPI_MODE0));
+    //digitalWrite(CS_PIN,0);
+    digitalWrite(ED19,0);
     SPI.transfer(get_D1_OSR());
-    digitalWrite(CS_PIN,1);
+    //digitalWrite(CS_PIN,1);
+    digitalWrite(ED19,1);
     SPI.endTransaction();
 
     delayMicroseconds(get_D1_OSR_delay());
 
-    SPI.beginTransaction(SPISettings(BME_SPI_RATE, MSBFIRST, SPI_MODE0));
-    digitalWrite(CS_PIN,0);  
+    SPI.beginTransaction(SPISettings(BPS_SPI_RATE, MSBFIRST, SPI_MODE0));
+    //digitalWrite(CS_PIN,0);  
+    digitalWrite(ED19,0);
     SPI.transfer(ADC_READ); // throw away first byte read
     uint8_t pres_data[3] = {0};
 
@@ -230,21 +257,21 @@ uint32_t MS5607::get_pressure()
         pres_data[i] = SPI.transfer(ADC_READ);
     }
 
-    digitalWrite(CS_PIN,1);
+    //digitalWrite(CS_PIN,1);
+    digitalWrite(ED19,1);
     SPI.endTransaction();
 
     D1 = pres_data[0]*65536 + pres_data[1]*256 + pres_data[2]; // combine data
     OFF = (int64_t)C2*131072 + ((int64_t)C4*(int64_t)dT)/64;
     SENS = (int64_t)C1*65536 + ((int64_t)C3*(int64_t)dT)/128;
     PRES = ((int64_t)D1*SENS/2097152 - OFF)/32768;
-    return PRES;
 }
 
 
 // Gets the altitude in centimeters
 // - Based on NASA's Earth Atmosphere Model (Metric Units)
 //   https://www.grc.nasa.gov/www/k-12/airplane/atmosmet.html
-uint32_t MS5607::get_altitude()
+void MS5607::update_altitude()
 {
     // Troposphere
     double altitude = (2.408058-pow((double)PRES/1000.0,1.0/5.256))/0.00005074287;
@@ -260,8 +287,76 @@ uint32_t MS5607::get_altitude()
     // of the sensor if you're above 25Km
 
     altitude *= 100.0; // convert meters to centimeters for integer value
-    return uint32_t(altitude);
+    ALT = uint32_t(altitude);
+    altRingBuffer[altRingBufferIndex] = ALT;
+    altRingBufferIndex++;
+    if(altRingBufferIndex >= BPS_BUFFER_SIZE)
+    {
+        altRingBufferIndex = 0;
+    }
 }
+
+
+void MS5607::update()
+{
+    update_temperature();
+    update_pressure();
+    update_altitude();
+}
+
+
+// Returns the last temperature data
+int32_t MS5607::get_temperature()
+{  return TEMP;  }
+
+
+// Returns the last pressure data// 
+uint32_t MS5607::get_pressure()
+{  return PRES;  }
+
+
+// Returns the last altitude data
+uint32_t MS5607::get_altitude()
+{  return ALT;  }
+
+
+// Calculate the filtered altitude based on the FIR coefficients
+void MS5607::calculate_altitude_FIR_filtered()
+{
+    double altitudeFiltered = 0;
+    for(int i = 0; i < BPS_FIR_SIZE; i++)
+    {
+        int16_t bufferIndex = altRingBufferIndex - i;
+        if(bufferIndex < 0)
+        {
+            bufferIndex += BPS_BUFFER_SIZE;
+        }
+        altitudeFiltered += altRingBuffer[bufferIndex]*bpsFilterCoefficients[i];
+    }
+    altFIRFiltered = uint32_t(altitudeFiltered);
+}
+
+
+// Return the Finite Impulse Response filtered altitude data
+uint32_t MS5607::get_altitude_FIR_filtered()
+{  return altFIRFiltered;  }
+
+
+// Calculate the filtered altitude based on the rolling average
+void MS5607::calculate_altitude_RA_filtered()
+{
+    double altitudeFiltered = 0;
+    for(int i = 0; i < BPS_BUFFER_SIZE; i++)
+    {
+        altitudeFiltered += altRingBuffer[i];
+    }
+    altRAFiltered = uint32_t(altitudeFiltered)/BPS_BUFFER_SIZE;
+}
+
+
+// Return the rolling average filtered altitude data
+uint32_t MS5607::get_altitude_RA_filtered()
+{  return altRAFiltered;  }
 
 
 // Prints all data from MS5607 to serial monitor
@@ -302,7 +397,7 @@ void MS5607::print_all()
 void MS5607::print_data()
 {
     Serial.print("Temp ");
-    Serial.print(get_temp()); 
+    Serial.print(get_temperature()); 
     Serial.print(" centicelsius - Pressure ");
     Serial.print(get_pressure());
     Serial.print(" Pa - Altitude ");
